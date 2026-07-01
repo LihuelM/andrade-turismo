@@ -1,0 +1,217 @@
+:root{
+  --accent:#2E8FB8;
+  --bg:#E2ECEC;
+  --navy:#143A40;
+  --navy-2:#102A30;
+  --whats:#25D366;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{
+  width:100vw; height:100vh;
+  font-family:'Mulish',system-ui,sans-serif;
+  overflow:hidden;
+  background:var(--bg);
+}
+img{display:block; max-width:100%;}
+
+.totem{ width:100vw; height:100vh; position:relative; background:var(--bg); }
+
+/* ============================================================
+   Bloques compartidos (mismo HTML, cada orientación decide
+   tamaño/posición vía sus propias reglas — nada en px fijo)
+   ============================================================ */
+
+/* --- Categorías: tarjeta con foto + overlay + nombre --- */
+.cat-card{ position:relative; border-radius:1.4vh; overflow:hidden; min-height:0; min-width:0; }
+.cat-card__media{ position:absolute; inset:0; background:center/cover no-repeat; }
+.cat-card__overlay{
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(12,40,45,.9) 0%, rgba(12,40,45,.36) 48%, rgba(12,40,45,.06) 100%);
+}
+.cat-card__badge{
+  position:absolute; top:16px; left:16px; z-index:2;
+  width:35px; height:35px; object-fit:contain;
+  filter:brightness(0) invert(1) drop-shadow(0 1px 3px rgba(0,0,0,.45));
+  pointer-events:none;
+}
+.cat-card__body{
+  position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end;
+  padding:2vh 2vh; color:#fff;
+}
+.cat-card__name{ font-family:'Mulish',system-ui,sans-serif; font-weight:500; letter-spacing:.2px; }
+
+/* --- Eyebrow (REGIÃO DOS LAGOS) --- */
+.t-eyebrow{ display:flex; align-items:center; gap:1.2vh; }
+.t-eyebrow__line{ width:3vh; height:2px; background:var(--accent); display:block; }
+.t-eyebrow__text{ color:var(--accent); font-weight:700; letter-spacing:.28em; text-transform:uppercase; white-space:nowrap; }
+
+/* --- Feature (ícone + label) --- */
+.t-feature{ display:flex; flex-direction:column; align-items:center; text-align:center; color:var(--navy); }
+.t-feature__icon{
+  border-radius:50%; background:var(--bg); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; flex:none;
+}
+.t-feature__icon img{ width:44%; height:44%; object-fit:contain; }
+.t-feature__label{ font-weight:700; line-height:1.25; }
+
+/* --- Selo --- */
+.t-seal{ display:flex; flex-direction:column; align-items:center; text-align:center; color:#fff; }
+.t-seal__head{ display:flex; align-items:center; gap:.5vh; }
+.t-seal__icon{ display:block; object-fit:contain; flex:none; }
+.t-seal__title{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.4px; text-transform:uppercase; line-height:1.2; }
+.t-seal__text{ color:rgba(255,255,255,.72); line-height:1.4; }
+
+/* --- Rodapé --- */
+.t-footer{ display:flex; align-items:center; justify-content:space-between; background:var(--navy-2); }
+.t-footer__logo{ height:100%; width:auto; }
+.t-footer__meta{ display:flex; align-items:center; color:rgba(255,255,255,.62); font-weight:600; white-space:nowrap; }
+.t-footer__meta b{ color:rgba(255,255,255,.9); font-weight:700; }
+.t-footer__dot{ border-radius:50%; background:rgba(255,255,255,.35); flex:none; }
+
+/* --- QR CTA --- */
+.t-qr{ display:flex; align-items:center; background:var(--navy-2); color:#fff; }
+.t-qr__icon{
+  flex:none; border-radius:50%; background:rgba(255,255,255,.08); border:1.5px solid rgba(255,255,255,.24);
+  display:flex; align-items:center; justify-content:center; color:#fff;
+}
+.t-qr__text{ font-weight:700; line-height:1.3; }
+.t-qr__img{ flex:none; background:#fff; border-radius:1vh; }
+
+/* --- Slideshow de fundo do header (compartilhado) --- */
+.t-hero{ position:relative; overflow:hidden; }
+.t-hero__track{ position:absolute; inset:0; display:flex; width:400%; animation:totemSlide 24s linear infinite; }
+.t-hero__slide{ flex:0 0 25%; background:center/cover no-repeat; filter:brightness(.6) saturate(1.05); }
+.t-hero__tint{ position:absolute; inset:0; }
+.t-hero__content{ position:relative; z-index:2; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.t-hero__logo{ width:auto; }
+.t-hero__title{ color:#fff; font-family:'Archivo',sans-serif; font-weight:800; text-shadow:0 2px 24px rgba(0,0,0,.3); }
+
+@keyframes totemSlide{
+  0%    { transform:translateX(0); }
+  25.2% { transform:translateX(0); animation-timing-function:cubic-bezier(.6,0,.2,1); }
+  33.3% { transform:translateX(-25%); }
+  58.6% { transform:translateX(-25%); animation-timing-function:cubic-bezier(.6,0,.2,1); }
+  66.7% { transform:translateX(-50%); }
+  91.9% { transform:translateX(-50%); animation-timing-function:cubic-bezier(.6,0,.2,1); }
+  100%  { transform:translateX(-75%); }
+}
+
+/* ============================================================
+   ESCENARIO A — VERTICAL 9:16 (padrão / orientation:portrait)
+   Composição: tudo empilhado, foto de topo, grade 2x3, CTA,
+   ícones, selos e rodapé — cada bloco em % de altura da tela.
+   ============================================================ */
+.layout-vertical{ display:flex; flex-direction:column; width:100%; height:100%; }
+.layout-horizontal{ display:none; }
+
+.layout-vertical .t-hero{ height:22%; }
+.layout-vertical .t-hero__content{ padding:3.5vh 6vw 3vh; gap:1.8vh; }
+.layout-vertical .t-hero__logo{ height:9vh; }
+.layout-vertical .t-eyebrow__text{ font-size:1.7vh; }
+.layout-vertical .t-hero__title{ font-size:3.6vh; line-height:1.16; max-width:90%; }
+
+.layout-vertical .t-grid-wrap{ flex:1 1 auto; min-height:0; display:flex; padding:2.6vh 4vw; }
+.layout-vertical .t-grid{
+  width:100%; height:100%; display:grid;
+  grid-template-columns:1fr 1fr; grid-template-rows:repeat(3,1fr); gap:2vh 2vw;
+}
+.layout-vertical .cat-card__name{ font-size:2.1vh; }
+
+.layout-vertical .t-qr{ height:12%; justify-content:center; gap:2.6vw; padding:0 5vw; }
+.layout-vertical .t-qr__icon{ width:5.4vh; height:5.4vh; }
+.layout-vertical .t-qr__icon svg{ width:45%; height:45%; }
+.layout-vertical .t-qr__text{ font-size:2vh; max-width:38vw; }
+.layout-vertical .t-qr__img{ width:11vh; height:11vh; padding:.9vh; }
+
+.layout-vertical .t-features{
+  height:10%; background:#fff; display:flex; align-items:center; justify-content:center;
+  padding:0 3vw; border-top:1.5px solid rgba(46,143,184,.28); border-bottom:1.5px solid rgba(46,143,184,.28);
+}
+.layout-vertical .t-features__grid{ width:100%; max-width:82vw; display:grid; grid-template-columns:repeat(4,1fr); }
+.layout-vertical .t-feature{ gap:1vh; padding:0 1vw; border-right:1px solid rgba(20,58,64,.12); }
+.layout-vertical .t-feature:last-child{ border-right:none; }
+.layout-vertical .t-feature__icon{ width:4.6vh; height:4.6vh; }
+.layout-vertical .t-feature__icon svg{ width:44%; height:44%; }
+.layout-vertical .t-feature__label{ font-size:1.5vh; }
+
+.layout-vertical .t-seals{ height:8%; background:var(--navy); display:flex; align-items:center; justify-content:center; padding:0 4vw; }
+.layout-vertical .t-seals__grid{ width:100%; max-width:80vw; display:grid; grid-template-columns:repeat(3,1fr); }
+.layout-vertical .t-seal{ gap:.6vh; padding:0 1.4vw; border-right:1px solid rgba(255,255,255,.16); }
+.layout-vertical .t-seal:last-child{ border-right:none; }
+.layout-vertical .t-seal__icon{ width:2.2vh; height:2.2vh; }
+.layout-vertical .t-seal__title{ font-size:1.5vh; }
+.layout-vertical .t-seal__text{ display:none; } /* pouco espaço vertical: mantém só o título */
+
+.layout-vertical .t-footer{ height:5%; padding:0 4vw; }
+.layout-vertical .t-footer__logo{ height:55%; }
+.layout-vertical .t-footer__meta{ gap:1.2vw; font-size:1.5vh; }
+.layout-vertical .t-footer__dot{ width:.5vh; height:.5vh; }
+
+/* ============================================================
+   ESCENARIO B — HORIZONTAL 16:9 (orientation:landscape)
+   Composição distinta: painel lateral fixo (foto+logo+QR) +
+   grade 3x2 ocupando a área principal + barra inferior única
+   com ícones, selos e rodapé condensados.
+   ============================================================ */
+@media (orientation:landscape){
+  .layout-vertical{ display:none; }
+  .layout-horizontal{ display:flex; flex-direction:column; width:100%; height:100%; }
+
+  .lh-top{ flex:1 1 auto; min-height:0; display:flex; }
+
+  /* painel esquerdo: foto+logo / QR / selos — sempre a mesma largura e margem */
+  .lh-side{ width:32%; flex:none; display:flex; flex-direction:column; height:100%; }
+  .lh-side .t-hero{ height:56%; }
+  .lh-side .t-hero__content{ padding:2.6vh 2.2vw; gap:1.4vh; }
+  .lh-side .t-hero__logo{ height:7.6vh; }
+  .lh-side .t-eyebrow__text{ font-size:1.5vh; }
+  .lh-side .t-hero__title{ font-size:2.7vh; line-height:1.15; }
+
+  /* QR — 2 colunas: imagem maior à esquerda, texto à direita */
+  .lh-side .t-qr{
+    height:28%; flex-direction:row; justify-content:center; align-items:center; gap:1.6vw;
+    padding:1.4vh 2vw; text-align:left; background:var(--navy-2);
+  }
+  .lh-side .t-qr__img{ width:13.5vh; height:13.5vh; padding:1vh; flex:none; }
+  .lh-side .t-qr__text{ font-size:1.9vh; line-height:1.32; max-width:14vw; font-weight:800; }
+
+  /* Selos — mesma altura da barra de ícones, 3 colunas horizontais */
+  .lh-side-seals{
+    height:16%; background:var(--navy-2); display:flex; flex-direction:row;
+    align-items:center; justify-content:space-between; gap:1vw; padding:0 2.2vw;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .lh-side-seals .t-seal{ flex-direction:column; align-items:flex-start; text-align:left; gap:.3vh; flex:1 1 0; min-width:0; }
+  .lh-side-seals .t-seal__icon{ width:1.8vh; height:1.8vh; }
+  .lh-side-seals .t-seal__title{ font-size:1.3vh; }
+  .lh-side-seals .t-seal__text{ font-size:1.15vh; opacity:.75; }
+
+  /* coluna direita: grade + barra (ícones+rodapé) — mesma largura entre si */
+  .lh-right{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; height:100%; }
+
+  .lh-grid-wrap{ flex:1 1 auto; min-height:0; min-width:0; display:flex; padding:2.2vh 2vw 1.4vh; }
+  .lh-grid{
+    width:100%; height:100%; display:grid;
+    grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:1.8vh 1.4vw;
+  }
+  .lh-grid .cat-card__name{ font-size:2vh; }
+  .lh-grid .cat-card__body{ padding:1.6vh 1.8vh; }
+
+  .lh-bottom{ flex:none; height:16%; display:flex; align-items:stretch; }
+
+  .lh-features{
+    flex:1 1 62%; background:#fff; display:flex; align-items:center; justify-content:center;
+    gap:3vw; padding:0 2vw;
+  }
+  .lh-features .t-feature{ flex-direction:column; gap:.7vh; }
+  .lh-features .t-feature__icon{ width:4.6vh; height:4.6vh; }
+  .lh-features .t-feature__icon svg{ width:44%; height:44%; }
+  .lh-features .t-feature__label{ font-size:1.45vh; text-align:center; white-space:nowrap; }
+
+  .lh-foot{
+    flex:1 1 38%; min-width:0; padding:0 1.6vw; background:var(--navy-2); gap:1.4vw;
+  }
+  .lh-foot .t-footer__logo{ height:32%; flex:none; }
+  .lh-foot .t-footer__meta{ gap:.3vh; font-size:1.25vh; flex-direction:column; align-items:flex-end; text-align:right; min-width:0; white-space:nowrap; flex:none; }
+  .lh-foot .t-footer__dot{ display:none; }
+}

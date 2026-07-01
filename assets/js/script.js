@@ -41,3 +41,28 @@
 
   requestAnimationFrame(tick);
 })();
+
+(function(){
+  var section = document.getElementById('experience');
+  if(!section) return;
+  var bg = section.querySelector('.experience__bg');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+
+  var ticking = false;
+  function update(){
+    var rect = section.getBoundingClientRect();
+    var vh = window.innerHeight;
+    var progress = (rect.top - vh) / (rect.height + vh) * -1;
+    var speed = parseFloat(bg.dataset.parallax) || 0.25;
+    var offset = (progress - 0.5) * rect.height * speed;
+    bg.style.transform = 'translate3d(0,' + offset.toFixed(1) + 'px,0)';
+    ticking = false;
+  }
+  function onScroll(){
+    if(!ticking){ window.requestAnimationFrame(update); ticking = true; }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  update();
+})();

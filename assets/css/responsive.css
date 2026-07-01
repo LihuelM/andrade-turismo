@@ -22,6 +22,18 @@
   .seal { border-right: none; }
 }
 
+/* ---- Sellos (glass cards): 1 columna ---- */
+@media (max-width: 680px) {
+  .seals__grid { grid-template-columns: 1fr; gap: 14px; }
+}
+
+/* ---- Experiência (selos + cta fundidos): compacta el bloque en mobile ---- */
+@media (max-width: 680px) {
+  .experience { padding: clamp(36px, 10vw, 64px) 20px; }
+  .experience__divider { margin: 20px auto; }
+  .cta__actions { max-width: 420px; margin-top: 8px; }
+}
+
 /* ---- Móvil grande ---- */
 @media (max-width: 640px) {
   .hero { padding: 12px; }
