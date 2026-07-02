@@ -57,7 +57,6 @@ img{display:block; max-width:100%;}
 /* --- Selo --- */
 .t-seal{ display:flex; flex-direction:column; align-items:center; text-align:center; color:#fff; }
 .t-seal__head{ display:flex; align-items:center; gap:.5vh; }
-.t-seal__icon{ display:block; object-fit:contain; flex:none; }
 .t-seal__title{ font-family:'Archivo',sans-serif; font-weight:700; letter-spacing:.4px; text-transform:uppercase; line-height:1.2; }
 .t-seal__text{ color:rgba(255,255,255,.72); line-height:1.4; }
 
@@ -75,7 +74,7 @@ img{display:block; max-width:100%;}
   display:flex; align-items:center; justify-content:center; color:#fff;
 }
 .t-qr__text{ font-weight:700; line-height:1.3; }
-.t-qr__img{ flex:none; background:#fff; border-radius:1vh; }
+.t-qr__img{ flex:none; background:#fff; border-radius:1vh; object-fit:contain; }
 
 /* --- Slideshow de fundo do header (compartilhado) --- */
 .t-hero{ position:relative; overflow:hidden; }
@@ -108,12 +107,12 @@ img{display:block; max-width:100%;}
 .layout-vertical .t-hero__content{ padding:3.5vh 6vw 3vh; gap:1.8vh; }
 .layout-vertical .t-hero__logo{ height:9vh; }
 .layout-vertical .t-eyebrow__text{ font-size:1.7vh; }
-.layout-vertical .t-hero__title{ font-size:3.6vh; line-height:1.16; max-width:90%; }
+.layout-vertical .t-hero__title{ font-size:3vh; line-height:1.16; max-width:90%; }
 
 .layout-vertical .t-grid-wrap{ flex:1 1 auto; min-height:0; display:flex; padding:2.6vh 4vw; }
 .layout-vertical .t-grid{
   width:100%; height:100%; display:grid;
-  grid-template-columns:1fr 1fr; grid-template-rows:repeat(3,1fr); gap:2vh 2vw;
+  grid-template-columns:repeat(3,1fr); grid-template-rows:1fr 1fr; gap:2vh 2vw;
 }
 .layout-vertical .cat-card__name{ font-size:2.1vh; }
 
@@ -121,26 +120,25 @@ img{display:block; max-width:100%;}
 .layout-vertical .t-qr__icon{ width:5.4vh; height:5.4vh; }
 .layout-vertical .t-qr__icon svg{ width:45%; height:45%; }
 .layout-vertical .t-qr__text{ font-size:2vh; max-width:38vw; }
-.layout-vertical .t-qr__img{ width:11vh; height:11vh; padding:.9vh; }
+.layout-vertical .t-qr__img{ width:11vh; height:11vh; }
 
 .layout-vertical .t-features{
   height:10%; background:#fff; display:flex; align-items:center; justify-content:center;
   padding:0 3vw; border-top:1.5px solid rgba(46,143,184,.28); border-bottom:1.5px solid rgba(46,143,184,.28);
 }
-.layout-vertical .t-features__grid{ width:100%; max-width:82vw; display:grid; grid-template-columns:repeat(4,1fr); }
-.layout-vertical .t-feature{ gap:1vh; padding:0 1vw; border-right:1px solid rgba(20,58,64,.12); }
+.layout-vertical .t-features__grid{ width:100%; max-width:92vw; display:grid; grid-template-columns:repeat(4,1fr); }
+.layout-vertical .t-feature{ gap:1vh; border-right:1px solid rgba(20,58,64,.12); }
 .layout-vertical .t-feature:last-child{ border-right:none; }
 .layout-vertical .t-feature__icon{ width:4.6vh; height:4.6vh; }
 .layout-vertical .t-feature__icon svg{ width:44%; height:44%; }
-.layout-vertical .t-feature__label{ font-size:1.5vh; }
+.layout-vertical .t-feature__label{ font-size:1.4vh; }
 
-.layout-vertical .t-seals{ height:8%; background:var(--navy); display:flex; align-items:center; justify-content:center; padding:0 4vw; }
-.layout-vertical .t-seals__grid{ width:100%; max-width:80vw; display:grid; grid-template-columns:repeat(3,1fr); }
-.layout-vertical .t-seal{ gap:.6vh; padding:0 1.4vw; border-right:1px solid rgba(255,255,255,.16); }
+.layout-vertical .t-seals{ height:10%; background:var(--navy); display:flex; align-items:center; justify-content:center; }
+.layout-vertical .t-seals__grid{ width:100%; max-width:92vw; display:grid; grid-template-columns:repeat(3,1fr); }
+.layout-vertical .t-seal{ gap:.5vh; padding:0 1.4vw; border-right:1px solid rgba(255,255,255,.16); }
 .layout-vertical .t-seal:last-child{ border-right:none; }
-.layout-vertical .t-seal__icon{ width:2.2vh; height:2.2vh; }
 .layout-vertical .t-seal__title{ font-size:1.5vh; }
-.layout-vertical .t-seal__text{ display:none; } /* pouco espaço vertical: mantém só o título */
+.layout-vertical .t-seal__text{ font-size:1.25vh; }
 
 .layout-vertical .t-footer{ height:5%; padding:0 4vw; }
 .layout-vertical .t-footer__logo{ height:55%; }
@@ -153,7 +151,7 @@ img{display:block; max-width:100%;}
    grade 3x2 ocupando a área principal + barra inferior única
    com ícones, selos e rodapé condensados.
    ============================================================ */
-@media (orientation:landscape){
+@media (min-width:800px) and (orientation:landscape){
   .layout-vertical{ display:none; }
   .layout-horizontal{ display:flex; flex-direction:column; width:100%; height:100%; }
 
@@ -170,10 +168,10 @@ img{display:block; max-width:100%;}
   /* QR — 2 colunas: imagem maior à esquerda, texto à direita */
   .lh-side .t-qr{
     height:28%; flex-direction:row; justify-content:center; align-items:center; gap:1.6vw;
-    padding:1.4vh 2vw; text-align:left; background:var(--navy-2);
+    padding:1.4vh 2vw; text-align:center; background:var(--navy-2);
   }
-  .lh-side .t-qr__img{ width:13.5vh; height:13.5vh; padding:1vh; flex:none; }
-  .lh-side .t-qr__text{ font-size:1.9vh; line-height:1.32; max-width:14vw; font-weight:800; }
+  .lh-side .t-qr__img{ width:20vh; height:20vh; flex:none; }
+  .lh-side .t-qr__text{ font-size:2.3vh; line-height:1.32; max-width:14vw; font-weight:800; }
 
   /* Selos — mesma altura da barra de ícones, 3 colunas horizontais */
   .lh-side-seals{
@@ -181,10 +179,10 @@ img{display:block; max-width:100%;}
     align-items:center; justify-content:space-between; gap:1vw; padding:0 2.2vw;
     border-top:1px solid rgba(255,255,255,.12);
   }
-  .lh-side-seals .t-seal{ flex-direction:column; align-items:flex-start; text-align:left; gap:.3vh; flex:1 1 0; min-width:0; }
+  .lh-side-seals .t-seal{ flex-direction:column; align-items:center; text-align:center; gap:.3vh; flex:1 1 0; min-width:0; }
   .lh-side-seals .t-seal__icon{ width:1.8vh; height:1.8vh; }
-  .lh-side-seals .t-seal__title{ font-size:1.3vh; }
-  .lh-side-seals .t-seal__text{ font-size:1.15vh; opacity:.75; }
+  .lh-side-seals .t-seal__title{ font-size:1.5vh; }
+  .lh-side-seals .t-seal__text{ font-size:1.5vh; opacity:.75; }
 
   /* coluna direita: grade + barra (ícones+rodapé) — mesma largura entre si */
   .lh-right{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; height:100%; }
@@ -204,14 +202,14 @@ img{display:block; max-width:100%;}
     gap:3vw; padding:0 2vw;
   }
   .lh-features .t-feature{ flex-direction:column; gap:.7vh; }
-  .lh-features .t-feature__icon{ width:4.6vh; height:4.6vh; }
-  .lh-features .t-feature__icon svg{ width:44%; height:44%; }
+  .lh-features .t-feature__icon{ width:8vh; height:8vh; }
+  .lh-features .t-feature__icon svg{ width:80%; height:80%; }
   .lh-features .t-feature__label{ font-size:1.45vh; text-align:center; white-space:nowrap; }
 
   .lh-foot{
-    flex:1 1 38%; min-width:0; padding:0 1.6vw; background:var(--navy-2); gap:1.4vw;
+    flex:1 1 38%; min-width:0; padding:0 2.6vw; background:var(--navy-2); gap:1.4vw;
   }
-  .lh-foot .t-footer__logo{ height:32%; flex:none; }
+  .lh-foot .t-footer__logo{ height:80%; flex:none; }
   .lh-foot .t-footer__meta{ gap:.3vh; font-size:1.25vh; flex-direction:column; align-items:flex-end; text-align:right; min-width:0; white-space:nowrap; flex:none; }
   .lh-foot .t-footer__dot{ display:none; }
 }
