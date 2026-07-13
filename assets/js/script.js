@@ -1,45 +1,216 @@
 /* =========================================================
-   Andrade Turismo — sitio · JavaScript
-   ---------------------------------------------------------
-   El slider del hero es 100% CSS (@keyframes andradeSlide):
-   un loop infinito hacia la izquierda con un clon de la 1ª
-   foto al final, para que el reinicio sea invisible y nunca
-   "rebobine" hacia la derecha.
-   Este script solo sincroniza los puntos de paginación con
-   esa línea de tiempo (21s en total ÷ 3 fotos = 7s por foto).
+   Slider del hero
+   - Avance automático cada 5 segundos
+   - Navegación manual mediante los puntos
+   - Sincroniza la tarjeta y el fondo desenfocado
    ========================================================= */
 (function () {
   'use strict';
 
-  var SLIDE_MS = 7000;   // duración visible de cada foto
-  var SLIDES = 3;        // fotos reales (sin contar el clon)
+  var SLIDE_MS = 5000;
+  var TRANSITION_MS = 900;
+  var SLIDES = 3;
 
   var dotsWrap = document.getElementById('heroDots');
-  if (!dotsWrap) return;
+  var cardTrack = document.querySelector('.hero__card-track');
+  var backdropTrack = document.querySelector('.hero__backdrop-track');
 
-  var dots = dotsWrap.querySelectorAll('.dot');
+  if (!dotsWrap || !cardTrack || !backdropTrack) return;
 
-  // Respeta a quien prefiere menos movimiento: deja la 1ª activa y sale.
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    return;
-  }
+  var dots = Array.prototype.slice.call(
+    dotsWrap.querySelectorAll('.dot')
+  );
 
-  var start = performance.now();
-  var current = -1;
+  var tracks = [cardTrack, backdropTrack];
 
-  function tick(now) {
-    var elapsed = now - start;
-    var active = Math.floor(elapsed / SLIDE_MS) % SLIDES;
-    if (active !== current) {
-      current = active;
-      for (var i = 0; i < dots.length; i++) {
-        dots[i].classList.toggle('dot--active', i === active);
+  var reduceMotion =
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var current = 0;
+  var autoplayTimer = null;
+  var cloneResetTimer = null;
+  var movingToClone = false;
+
+  /*
+   * Desactiva la animación CSS original para que el slider
+   * pase a ser controlado completamente por JavaScript.
+   */
+  tracks.forEach(function (track) {
+    track.style.animation = 'none';
+    track.style.transition = reduceMotion
+      ? 'none'
+      : 'transform ' + TRANSITION_MS + 'ms cubic-bezier(.6, 0, .2, 1)';
+  });
+
+  /*
+   * Convierte los puntos actuales en controles accesibles,
+   * sin necesidad de modificar el HTML.
+   */
+  dots.forEach(function (dot, index) {
+    dot.setAttribute('role', 'button');
+    dot.setAttribute('tabindex', '0');
+    dot.setAttribute('aria-label', 'Mostrar imagem ' + (index + 1));
+    dot.style.cursor = 'pointer';
+  });
+
+  function updateDots(index) {
+    dots.forEach(function (dot, dotIndex) {
+      var isActive = dotIndex === index;
+
+      dot.classList.toggle('dot--active', isActive);
+
+      if (isActive) {
+        dot.setAttribute('aria-current', 'true');
+      } else {
+        dot.removeAttribute('aria-current');
       }
-    }
-    requestAnimationFrame(tick);
+    });
   }
 
-  requestAnimationFrame(tick);
+  function setTransform(index) {
+    var offset = index * 25;
+
+    tracks.forEach(function (track) {
+      track.style.transform =
+        'translate3d(-' + offset + '%, 0, 0)';
+    });
+  }
+
+  function moveTo(index) {
+    tracks.forEach(function (track) {
+      track.style.transition = reduceMotion
+        ? 'none'
+        : 'transform ' + TRANSITION_MS + 'ms cubic-bezier(.6, 0, .2, 1)';
+    });
+
+    setTransform(index);
+  }
+
+  function snapTo(index) {
+    tracks.forEach(function (track) {
+      track.style.transition = 'none';
+    });
+
+    setTransform(index);
+
+    /*
+     * Fuerza al navegador a aplicar el salto instantáneo
+     * antes de restaurar la transición.
+     */
+    cardTrack.offsetHeight;
+
+    tracks.forEach(function (track) {
+      track.style.transition = reduceMotion
+        ? 'none'
+        : 'transform ' + TRANSITION_MS + 'ms cubic-bezier(.6, 0, .2, 1)';
+    });
+  }
+
+  function stopAutoplay() {
+    window.clearTimeout(autoplayTimer);
+    autoplayTimer = null;
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
+
+    if (reduceMotion || document.hidden) return;
+
+    autoplayTimer = window.setTimeout(function () {
+      nextSlide();
+      startAutoplay();
+    }, SLIDE_MS);
+  }
+
+  function nextSlide() {
+    window.clearTimeout(cloneResetTimer);
+
+    /*
+     * Avanza normalmente entre las tres imágenes reales.
+     */
+    if (current < SLIDES - 1) {
+      current += 1;
+
+      updateDots(current);
+      moveTo(current);
+      return;
+    }
+
+    /*
+     * Desde la última imagen avanza hasta el clon de la
+     * primera para mantener el loop continuo.
+     */
+    current = 0;
+    movingToClone = true;
+
+    updateDots(current);
+    moveTo(SLIDES);
+
+    /*
+     * Una vez terminada la transición hacia el clon,
+     * vuelve a la primera imagen sin animación.
+     */
+    cloneResetTimer = window.setTimeout(function () {
+      snapTo(0);
+      movingToClone = false;
+    }, TRANSITION_MS + 60);
+  }
+
+  function selectSlide(index) {
+    if (index < 0 || index >= SLIDES) return;
+
+    window.clearTimeout(cloneResetTimer);
+
+    /*
+     * Si se hace clic mientras está terminando el loop,
+     * normaliza primero la posición.
+     */
+    if (movingToClone) {
+      snapTo(0);
+      movingToClone = false;
+    }
+
+    current = index;
+
+    updateDots(current);
+    moveTo(current);
+
+    /*
+     * Reinicia el tiempo automático después de una
+     * selección manual.
+     */
+    startAutoplay();
+  }
+
+  dots.forEach(function (dot, index) {
+    dot.addEventListener('click', function () {
+      selectSlide(index);
+    });
+
+    dot.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectSlide(index);
+      }
+    });
+  });
+
+  /*
+   * Detiene el autoplay cuando la pestaña no está visible
+   * y lo reactiva cuando el usuario regresa.
+   */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      stopAutoplay();
+    } else {
+      startAutoplay();
+    }
+  });
+
+  updateDots(current);
+  snapTo(current);
+  startAutoplay();
 })();
 
 (function(){
